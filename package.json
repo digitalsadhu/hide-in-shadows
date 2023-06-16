@@ -1,0 +1,22 @@
+{
+  "name": "hide-in-shadows",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "./client.js",
+  "exports": {
+    ".": "./client.js",
+    "./client": "./client.js",
+    "./server": "./server.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
