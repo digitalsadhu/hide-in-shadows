@@ -10,7 +10,7 @@
     "./server": "./server.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test ./test/test.js"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +18,9 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.4",
+    "playwright": "^1.35.1"
   }
 }
