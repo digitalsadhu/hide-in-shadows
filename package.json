@@ -4,13 +4,30 @@
   "description": "",
   "type": "module",
   "main": "./client.js",
+  "files": [
+    "client.js",
+    "types/client.d.ts",
+    "server.js",
+    "types/server.d.ts"
+  ],
   "exports": {
-    ".": "./client.js",
-    "./client": "./client.js",
-    "./server": "./server.js"
+    ".": {
+      "types": "./client.d.ts",
+      "default": "./client.js"
+    },
+    "./client": {
+      "types": "./client.d.ts",
+      "default": "./client.js"
+    },
+    "./server": {
+      "types": "./server.d.ts",
+      "default": "./server.js"
+    }
   },
   "scripts": {
-    "test": "node --test ./test/test.js"
+    "test": "node --test ./test/test.js",
+    "types": "tsc",
+    "prepublish": "npm run types"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +38,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.18.4",
-    "playwright": "^1.35.1"
+    "playwright": "^1.35.1",
+    "typescript": "^5.1.3"
   }
 }
