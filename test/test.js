@@ -1,4 +1,5 @@
 import http from "node:http";
+import fs from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { test, after } from "node:test";
@@ -182,6 +183,24 @@ test("tests", async (t) => {
         (e) => e.textContent
       );
       assert.strictEqual(displayAfterClick, "You clicked 1 times");
+      await browser.close();
+    });
+
+    await t.test("Including inline styles", async () => {
+      template = `
+        ${ssr("hide-in-shadows-example-1", App, {
+          styles: await fs.readFile(join(__dirname, "./styles.css"), "utf8"),
+        })}
+        <script type="module">${await build(
+          "./ssr-with-hydration.js"
+        )}</script>
+      `;
+
+      const browser = await chromium.launch();
+      const page = await browser.newPage();
+      await page.goto("http://localhost:3333");
+      const styles = await page.$eval("hide-in-shadows-example-1 style", (e) => e.textContent);
+      assert.strictEqual(styles, "h1 {\n    background-color: hotpink;\n}");
       await browser.close();
     });
   });
