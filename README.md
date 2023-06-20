@@ -1,6 +1,6 @@
 # Hide In Shadows
 
-A small library for wrapping React apps in shadow dom.
+A small, zero dependency library for wrapping React apps in the shadow dom.
 
 ## Usage
 
@@ -12,7 +12,7 @@ npm install hide-in-shadows react react-dom
 
 ### Server Side Rendered React
 
-If you want to SSR your React app, use this approach
+If you want to SSR your React app while isolating it inside the shadow dom, read on...
 
 #### Server code
 
@@ -21,8 +21,8 @@ import { ssr } from "hide-in-shadows/server";
 import App from "./app.js"; // your React app component. You will need to bundle this if it is in JSX.
 
 const options = {
-    props, // a props object. This will be serialised and made available when hydrating on the client side.
-    styles, // inline styles to be included in the shadow dom. Inlining styles is good for avoiding FOUC issues.
+    props, // a props object for your app. This will be serialised and made available when hydrating on the client side.
+    styles, // inline styles to be included in the shadow dom. Inlining styles is good for avoiding FOUC issues. See example below.
     replacer, // function to control how objects are serialized. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
     mode = "open" // shadow dom mode See https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM. Defaults to "open"
 }
@@ -62,7 +62,7 @@ ssr("my-app", App, {
 **Client Side**
 
 ```js
-import { ssr } from "hide-in-shadows/client";
+import { ssr } from "hide-in-shadows";
 import App from "./app.js";
 
 ssr("my-app", App, {
@@ -75,7 +75,7 @@ ssr("my-app", App, {
 
 #### Example styles usage
 
-It is generally prefereable to use inline styles rather than external URLs when working with the shadow dom due to the fact that content can display unstyled with external style URLs are fetched.
+It is generally prefereable to use inline styles rather than external URLs when working with the shadow dom due to the fact that content can display unstyled while external style URLs are fetched.
 Using a library such as Tailwind that allows you to purge your CSS down to a minimum can help with this though you are free to provide any styles you wish. If you do still plan on using an external stylesheet, include a link tag in your app and be sure to preload the URL in the document head to help avoid a flash of unstyled content.
 
 **Server Side**
