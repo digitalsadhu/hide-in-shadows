@@ -14,10 +14,14 @@ export function ssr(name, app, reviver) {
       constructor() {
         super();
         if (this.shadowRoot) {
-          const data = this.shadowRoot.querySelector(`script[type="application/json"]`);
+          let props = {};
+          const data = this.shadowRoot.querySelector(
+            `script[type="application/json"]`
+          );
           const el = this.shadowRoot.querySelector(`#${name}`);
-          // @ts-ignore
-          const props = JSON.parse(data.textContent, reviver);
+          if (data) {
+            props = JSON.parse(data.textContent, reviver);
+          }
           if (el) {
             hydrateRoot(el, React.createElement(app, props));
           }
@@ -38,11 +42,11 @@ export function csr(name, app) {
     class extends HTMLElement {
       constructor() {
         super();
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        const el = document.createElement('div');
-        el.setAttribute('id', name);
+        const shadowRoot = this.attachShadow({ mode: "open" });
+        const el = document.createElement("div");
+        el.setAttribute("id", name);
         shadowRoot.appendChild(el);
-          // @ts-ignore
+        // @ts-ignore
         const props = window.__REACT_DATA__.get(name);
         createRoot(el).render(React.createElement(app, props));
       }

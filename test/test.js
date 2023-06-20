@@ -8,6 +8,7 @@ import esbuild from "esbuild";
 import { ssr } from "../server.js";
 import App from "./app.js";
 import AppWithProps from "./app-with-props.js";
+import AppWithUrlProp from "./app-with-url-prop.js";
 const __dirname = new URL(".", import.meta.url).pathname;
 
 const build = async (path) => {
@@ -48,7 +49,7 @@ test("tests", async (t) => {
   await test("Server rendered React app with hydration", async (t) => {
     await t.test("Basic case", async () => {
       template = `
-        ${ssr("hide-in-shadows-example-1", App, {})}
+        ${ssr("hide-in-shadows-example-1", App)}
         <script type="module">${await build("./ssr-with-hydration.js")}</script>
       `;
 
@@ -74,7 +75,7 @@ test("tests", async (t) => {
 
     await t.test("Polyfill for browsers that don't support DSD: Safari", async () => {
       template = `
-        ${ssr("hide-in-shadows-example-1", App, {})}
+        ${ssr("hide-in-shadows-example-1", App)}
         <script type="module">${await build("./ssr-with-hydration.js")}</script>
       `;
 
@@ -100,7 +101,7 @@ test("tests", async (t) => {
     
     await t.test("Polyfill for browsers that don't support DSD: Firefox", async () => {
       template = `
-        ${ssr("hide-in-shadows-example-1", App, {})}
+        ${ssr("hide-in-shadows-example-1", App)}
         <script type="module">${await build("./ssr-with-hydration.js")}</script>
       `;
 
@@ -127,7 +128,7 @@ test("tests", async (t) => {
     await t.test("Using props", async () => {
       template = `
         ${ssr("hide-in-shadows-example-1", AppWithProps, {
-          title: "Hello, world!",
+          props: { title: "Hello, world!" },
         })}
         <script type="module">${await build(
           "./ssr-with-hydration-and-props.js"
@@ -153,13 +154,43 @@ test("tests", async (t) => {
       assert.strictEqual(displayAfterClick, "You clicked 1 times");
       await browser.close();
     });
+
+    await t.test("Using a reviver", async () => {
+      template = `
+        ${ssr("hide-in-shadows-example-1", AppWithUrlProp, {
+          props: { url: new URL("https://example.com") },
+        })}
+        <script type="module">${await build(
+          "./ssr-with-hydration-and-url-prop.js"
+        )}</script>
+      `;
+
+      const browser = await chromium.launch();
+      const page = await browser.newPage();
+      await page.goto("http://localhost:3333");
+      await page.waitForSelector("div#url");
+      const title = await page.$eval("div#url", (e) => e.textContent);
+      assert.strictEqual(title, "https://example.com/");
+      const initialDisplay = await page.$eval(
+        "p#click-display",
+        (e) => e.textContent
+      );
+      assert.strictEqual(initialDisplay, "You clicked 0 times");
+      await page.locator("button").click();
+      const displayAfterClick = await page.$eval(
+        "p#click-display",
+        (e) => e.textContent
+      );
+      assert.strictEqual(displayAfterClick, "You clicked 1 times");
+      await browser.close();
+    });
   });
 
   await test("Multiple React apps on the same page", async (t) => {
     await t.test("Basic case", async () => {
       template = `
-        ${ssr("hide-in-shadows-example-1", App, {})}
-        ${ssr("hide-in-shadows-example-2", App, {})}
+        ${ssr("hide-in-shadows-example-1", App)}
+        ${ssr("hide-in-shadows-example-2", App)}
         <script type="module">${await build(
           "./multiple-ssr-with-hydration.js"
         )}</script>

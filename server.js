@@ -2,19 +2,28 @@ import ReactDOM from "react-dom/server";
 import React from "react";
 
 /**
+ * @typedef {Object} SSROptions
+ * @property {any} [props] - Application props. These will be serialised and passed to the client for hydration as well as used to SSR the application/component.
+ * @property {any} [replacer] - A function that transforms the results. This function is called for each member of the object. If a property is excluded then the value returned is null.
+ * @property {string} [styles] - Inline styling to be added to the shadow root.
+ * @property {string} [mode] - The mode of the shadow root. Can be "open" or "closed". Defaults to "open".
+ */
+
+/**
  * Server renders a React app/component and returns an HTML string ready for insertion into the DOM.
  * @param {string} name - The name of the app. Lower case characters and "-" character only. This value will be used as the custom element name. Must match the name used on the client.
  * @param {any} app - The React component/app to render.
- * @param {any} props - Application props. These will be serialised and passed to the client for hydration as well as used to SSR the application/component.
- * @param {any} [replacer] - A function that transforms the results. This function is called for each member of the object. If a property is excluded then the value returned is null.
+ * @param {SSROptions} [options] - Application props. These will be serialised and passed to the client for hydration as well as used to SSR the application/component.
  * @returns {string}
  */
-export function ssr(name, app, props, replacer) {
-  return `<style>${name}:not(:defined) > template[shadowrootmode] ~ *  { display: none; }</style>
+export function ssr(name, app, { props, replacer, styles, mode = "open" } = {}) {
+  return `
+<style>${name}:not(:defined) > template[shadowrootmode] ~ *  { display: none; }</style>
 <${name}>
-  <template shadowrootmode="open">
-    <script type="application/json">${JSON.stringify(props, replacer)}</script>
-    <div id="${name}">${ReactDOM.renderToString(React.createElement(app, props))}</div>
+  <template shadowrootmode="${mode}">
+    ${props ? `<script type="application/json">${JSON.stringify(props, replacer)}</script>` : ''}
+    ${styles ? `<style>${styles}</style>` : ''}
+    <div id="${name}">${ReactDOM.renderToString(React.createElement(app, props ? props : null))}</div>
   </template>
 </${name}>
 <script>
