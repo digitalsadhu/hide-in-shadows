@@ -10,19 +10,11 @@
     "server.js",
     "types/server.d.ts"
   ],
+  "types": "./types/client.d.ts",
   "exports": {
-    ".": {
-      "types": "./client.d.ts",
-      "default": "./client.js"
-    },
-    "./client": {
-      "types": "./client.d.ts",
-      "default": "./client.js"
-    },
-    "./server": {
-      "types": "./server.d.ts",
-      "default": "./server.js"
-    }
+    ".": "./client.js",
+    "./client": "./client.js",
+    "./server": "./server.js"
   },
   "scripts": {
     "test": "node --test ./test/test.js",
