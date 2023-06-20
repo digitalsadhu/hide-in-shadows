@@ -40,17 +40,3 @@ export function ssr(name, app, { props, replacer, styles, mode = "open" } = {}) 
   })(document.currentScript.previousElementSibling);
 </script>`;
 }
-
-/**
- * Client side renders a React app/component and returns an HTML bootstrapping string ready for insertion into the DOM.
- * @param {string} name - The name of the app. Lower case characters and "-" character only. This value will be used as the custom element name. Must match the name used on the client.
- * @param {React.Attributes | null} props - Application props. These will be serialised and passed to the client.
- * @returns {string}
- */
-export function csr(name, props) {
-  return `<script>
-  window.__REACT_DATA__ = window.__REACT_DATA__ || new Map();
-  window.__REACT_DATA__.set('${name}', ${JSON.stringify(props)});
-</script>
-<${name}></${name}>`;
-}
