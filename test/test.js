@@ -6,6 +6,8 @@ import { test, after } from "node:test";
 import assert from "node:assert";
 import { chromium, webkit, firefox } from "playwright";
 import esbuild from "esbuild";
+import React from "react";
+import ReactDOM from "react-dom/server";
 import { ssr } from "../server.js";
 import App from "./app.js";
 import AppWithProps from "./app-with-props.js";
@@ -183,6 +185,19 @@ test("tests", async (t) => {
         (e) => e.textContent
       );
       assert.strictEqual(displayAfterClick, "You clicked 1 times");
+      await browser.close();
+    });
+
+    await t.test("Pre-rendering app to string", async () => {
+      const el = React.createElement('h1', null, 'Hello prerender!');
+      const app = ReactDOM.renderToString(el);
+      template = `${ssr("hide-in-shadows-example-1", app)}`;
+
+      const browser = await chromium.launch();
+      const page = await browser.newPage();
+      await page.goto("http://localhost:3333");
+      const title = await page.$eval("h1", (e) => e.textContent);
+      assert.strictEqual(title, "Hello prerender!");
       await browser.close();
     });
 

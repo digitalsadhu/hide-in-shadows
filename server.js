@@ -12,18 +12,19 @@ import React from "react";
 /**
  * Server renders a React app/component and returns an HTML string ready for insertion into the DOM.
  * @param {string} name - The name of the app. Lower case characters and "-" character only. This value will be used as the custom element name. Must match the name used on the client.
- * @param {any} app - The React component/app to render.
+ * @param {string | function} app - The React component/app to render. Can be a React component or a pre-rendered string.
  * @param {SSROptions} [options] - Application props. These will be serialised and passed to the client for hydration as well as used to SSR the application/component.
  * @returns {string}
  */
 export function ssr(name, app, { props, replacer, styles, mode = "open" } = {}) {
+  const rendered = typeof app === "string" ? app : ReactDOM.renderToString(React.createElement(app, props));
   return `
 <style>${name}:not(:defined) > template[shadowrootmode] ~ *  { display: none; }</style>
 <${name}>
   <template shadowrootmode="${mode}">
     ${props ? `<script type="application/json">${JSON.stringify(props, replacer)}</script>` : ''}
     ${styles ? `<style>${styles}</style>` : ''}
-    <div id="${name}">${ReactDOM.renderToString(React.createElement(app, props ? props : null))}</div>
+    <div id="${name}">${rendered}</div>
   </template>
 </${name}>
 <script>

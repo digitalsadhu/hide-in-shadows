@@ -26,9 +26,13 @@ const options = {
     replacer, // function to control how objects are serialized. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
     mode = "open" // shadow dom mode See https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM. Defaults to "open"
 }
-const rendered = ssr("hide-in-shadows-example", App, options);
+const rendered = ssr(
+    "hide-in-shadows-example", // name to use for custom element in the DOM
+    App, // either a React component OR a pre rendered string
+    options // additional options
+);
 
-// respond with "rendered" from your server
+// you should then respond with "rendered" from your server
 ```
 
 #### Client code
@@ -71,6 +75,33 @@ ssr("my-app", App, {
     return value;
   },
 });
+```
+
+#### Example manually rendering
+
+The following example shows pre rendering a string to pass to the ssr function for cases where you need more control.
+
+**Server Side**
+
+```js
+import ReactDOM from "react-dom/server"
+import { ssr } from "hide-in-shadows/server";
+import App from "./app.js";
+
+const app = ReactDOM.renderToString(React.createElement(App))
+ssr("my-app", app);
+```
+
+If you need to pass props to your app, be sure to pass them to the ssr function for serialisation
+
+```js
+import ReactDOM from "react-dom/server"
+import { ssr } from "hide-in-shadows/server";
+import App from "./app.js";
+
+const props = { ... }
+const app = ReactDOM.renderToString(React.createElement(App, props))
+ssr("my-app", app, { props });
 ```
 
 #### Example styles usage
