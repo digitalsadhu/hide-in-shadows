@@ -8,25 +8,33 @@ import React from "react";
  * @param {{ reviver?: any }} [options] - Options object
  */
 export function ssr(name, app, { reviver } = {}) {
-  customElements.define(
-    name,
-    class extends HTMLElement {
-      constructor() {
-        super();
-        if (this.shadowRoot) {
-          let props = {};
-          const data = this.shadowRoot.querySelector(
-            `script[type="application/json"]`
-          );
-          const el = this.shadowRoot.querySelector(`#${name}`);
-          if (data) {
-            props = JSON.parse(data.textContent, reviver);
-          }
-          if (el) {
-            hydrateRoot(el, React.createElement(app, props));
+  if (!customElements.get(name)) {
+    customElements.define(
+      name,
+      class extends HTMLElement {
+        constructor() {
+          super();
+          if (this.shadowRoot) {
+            let props = {};
+            const data = this.shadowRoot.querySelector(
+              `script[type="application/json"]`
+            );
+            if (data) {
+              try {
+                props = JSON.parse(data.textContent, reviver);
+              } catch (e) {
+                throw new Error(
+                  `SSR: Props (${data.textContent}) were provided but parse failed: Error message was: ${e.message}`
+                );
+              }
+            }
+            const el = this.shadowRoot.querySelector(`#${name}`);
+            if (el) {
+              hydrateRoot(el, React.createElement(app, props));
+            }
           }
         }
       }
-    }
-  );
+    );
+  }
 }

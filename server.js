@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import ReactDOM from "react-dom/server";
 import React from "react";
 
@@ -17,12 +18,22 @@ import React from "react";
  * @returns {string}
  */
 export function ssr(name, app, { props, replacer, styles, mode = "open" } = {}) {
+  assert(typeof name === "string", "SSR: 'name' argument must be a string");
+  assert(["open", "closed"].includes(mode), "SSR: 'mode' argument must be either 'open' or 'closed'");
   const rendered = typeof app === "string" ? app : ReactDOM.renderToString(React.createElement(app, props));
+  let stringifiedProps;
+  if (props) {
+    try {
+      stringifiedProps = JSON.stringify(props, replacer);
+    } catch (e) {
+      throw new Error(`SSR: Props (${props}) were provided but stringify failed: Error message was: ${e.message}`);
+    }
+  }
   return `
-<style>${name}:not(:defined) > template[shadowrootmode] ~ *  { display: none; }</style>
+<style>${name}:not(:defined) > template[shadowrootmode] ~ *  {opacity:0;visibility:hidden;}</style>
 <${name}>
   <template shadowrootmode="${mode}">
-    ${props ? `<script type="application/json">${JSON.stringify(props, replacer)}</script>` : ''}
+    ${props ? `<script type="application/json">${stringifiedProps}</script>` : ''}
     ${styles ? `<style>${styles}</style>` : ''}
     <div id="${name}">${rendered}</div>
   </template>
