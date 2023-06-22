@@ -19,7 +19,8 @@
   "scripts": {
     "test": "node --test ./test/test.js",
     "types": "tsc",
-    "prepublish": "npm run types"
+    "preversion": "npm run types",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "keywords": [],
   "author": "",
