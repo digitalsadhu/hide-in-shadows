@@ -38,14 +38,14 @@ const rendered = ssr(
 #### Client code
 
 ```js
-import { ssr } from "hide-in-shadows";
+import { hydrate } from "hide-in-shadows";
 import App from "./app.js"; // your React app component.
 
 const options = {
   reviver, // function to control how the DOM serialised props object is deserialised. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse.
 };
 // calling this method will cause it to hydrate the DOM that was setup in the server code section above.
-ssr("hide-in-shadows-example", App, options);
+hydrate("hide-in-shadows-example", App, options);
 ```
 
 ##### Example reviver usage
@@ -66,10 +66,10 @@ ssr("my-app", App, {
 **Client Side**
 
 ```js
-import { ssr } from "hide-in-shadows";
+import { hydrate } from "hide-in-shadows";
 import App from "./app.js";
 
-ssr("my-app", App, {
+hydrate("my-app", App, {
   reviver: (key, value) => {
     if (key === "url") return new URL(value);
     return value;

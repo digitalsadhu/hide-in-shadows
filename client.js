@@ -7,12 +7,12 @@ import React from "react";
  */
 
 /**
- * Hydrates an SSR'd React app on the client side by name and component. Expects ssr to be have been called on the server.
+ * Hydrates an SSR'd React app on the client side by name and component. Expects ssr() to be have been called on the server.
  * @param {string} name - The name of the app. Lower case characters and "-" character only. This value will be used as the custom element name. Must match the name used on the server.
  * @param {any} app - The React component/app to render.
  * @param {HydrateOptions} [options] - Options object
  */
-export function ssr(name, app, { reviver } = {}) {
+export function hydrate(name, app, { reviver } = {}) {
   if (!customElements.get(name)) {
     customElements.define(
       name,
@@ -29,7 +29,7 @@ export function ssr(name, app, { reviver } = {}) {
                 props = JSON.parse(data.textContent, reviver);
               } catch (e) {
                 throw new Error(
-                  `SSR: Props (${data.textContent}) were provided but parse failed: Error message was: ${e.message}`
+                  `SSR(hydrate): Props (${data.textContent}) were provided but parse failed: Error message was: ${e.message}`
                 );
               }
             }
