@@ -12,7 +12,7 @@ import React from "react";
  * @param {any} app - The React component/app to render.
  * @param {HydrateOptions} [options] - Options object
  */
-export function hydrate(name, app, { reviver } = {}) {
+export function client(name, app, { reviver } = {}) {
   if (!customElements.get(name)) {
     customElements.define(
       name,

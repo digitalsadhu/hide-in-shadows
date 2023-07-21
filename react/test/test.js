@@ -8,7 +8,7 @@ import { chromium, webkit, firefox } from "playwright";
 import esbuild from "esbuild";
 import React from "react";
 import ReactDOM from "react-dom/server";
-import { ssr } from "../server.js";
+import { server as ssr } from "../server.js";
 import App from "./app.js";
 import AppWithProps from "./app-with-props.js";
 import AppWithUrlProp from "./app-with-url-prop.js";

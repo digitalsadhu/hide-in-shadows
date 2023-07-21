@@ -19,7 +19,7 @@ import React from "react";
  * @param {SSROptions<TProps>} [options] - Application props. These will be serialised and passed to the client for hydration as well as used to SSR the application/component.
  * @returns {string}
  */
-export function ssr(name, app, { props, replacer, styles, mode = "open" } = {}) {
+export function server(name, app, { props, replacer, styles, mode = "open" } = {}) {
   assert(typeof name === "string", "SSR: 'name' argument must be a string");
   assert(["open", "closed"].includes(mode), "SSR: 'mode' argument must be either 'open' or 'closed'");
   const rendered = typeof app === "string" ? app : ReactDOM.renderToString(React.createElement(app, props));
@@ -32,7 +32,7 @@ export function ssr(name, app, { props, replacer, styles, mode = "open" } = {}) 
     }
   }
   return `
-<style>${name}:not(:defined) > template[shadowrootmode] ~ *  {opacity:0;visibility:hidden;}</style>
+<style>${name}:not(:defined) > template[shadowrootmode] ~ * {opacity:0;visibility:hidden;}</style>
 <${name}>
   <template shadowrootmode="${mode}">
     ${props ? `<script type="application/json">${stringifiedProps}</script>` : ''}
