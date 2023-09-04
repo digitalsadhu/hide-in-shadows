@@ -1,4 +1,4 @@
-import { dsdPolyfill } from 'dsd-polyfill';
+import { dsdPolyfill } from "dsd-polyfill";
 if (document.currentScript?.previousElementSibling) {
-	dsdPolyfill(document.currentScript.previousElementSibling);
+  dsdPolyfill(document.currentScript.previousElementSibling);
 }
