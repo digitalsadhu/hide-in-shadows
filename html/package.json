@@ -13,6 +13,7 @@
   },
   "scripts": {
     "test": "node --test ./test.js",
+    "build": "rollup -c",
     "types": "tsc",
     "preversion": "npm run types",
     "postversion": "git push && git push --tags && npm publish"
@@ -28,5 +29,12 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-node-resolve": "^15.2.1",
+    "@rollup/plugin-terser": "^0.4.3",
+    "dsd-polyfill": "1.0.0",
+    "rollup": "^3.28.1"
   }
 }
