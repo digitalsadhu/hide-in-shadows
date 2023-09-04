@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
+import fs from "node:fs";
 import ReactDOM from "react-dom/server";
 import React from "react";
+
+const polyfill = fs.readFileSync(
+  new URL("./dist/polyfill.js", import.meta.url),
+  "utf8"
+);
 
 /**
  * @template TProps
@@ -40,17 +46,5 @@ export function server(name, app, { props, replacer, styles, mode = "open" } = {
     <div id="${name}">${rendered}</div>
   </template>
 </${name}>
-<script>
-  (function attachShadowRoots(root) {
-    if (!HTMLTemplateElement.prototype.hasOwnProperty('shadowRootMode')) {
-      root.querySelectorAll("template[shadowrootmode]").forEach(template => {
-        const mode = template.getAttribute("shadowrootmode");
-        const shadowRoot = template.parentNode.attachShadow({ mode });
-        shadowRoot.appendChild(template.content);
-        template.remove();
-        attachShadowRoots(shadowRoot);
-      });
-    }
-  })(document.currentScript.previousElementSibling);
-</script>`;
+<script>${polyfill}</script>`;
 }

@@ -25,13 +25,13 @@ const markup = `
 `;
 
 const options = {
-    mode: "open" // or "closed", defaults to "open"
-}
+  mode: "open", // or "closed", defaults to "open"
+};
 
 const rendered = wrap(
-    "hide-in-shadows-example", // name to use for custom element in the DOM
-    markup, // HTML markup in a string
-    options // additional options
+  "hide-in-shadows-example", // name to use for custom element in the DOM
+  markup, // HTML markup in a string
+  options // additional options
 );
 
 // you should then respond with "rendered" from your server
@@ -51,5 +51,7 @@ document.querySelector("#some-id");
 Will need to be changed to reach into the shadow DOM if it is to continue working
 
 ```js
-document.querySelector("hide-in-shadows-example").shadowRoot.querySelector("#some-id");
+document
+  .querySelector("hide-in-shadows-example")
+  .shadowRoot.querySelector("#some-id");
 ```
