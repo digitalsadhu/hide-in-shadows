@@ -1,6 +1,6 @@
 {
   "name": "@hide-in-shadows/react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "type": "module",
   "types": "./types/client.d.ts",
